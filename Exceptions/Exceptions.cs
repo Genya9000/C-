@@ -3,32 +3,54 @@
 namespace Exceptions
 {
     //TODO: Create custom exception "MatrixException"
-    
+    public class MatrixException : Exception
+    {
+        public MatrixException ()
+        {}
+
+        public MatrixException (string message) 
+            : base(message)
+        {}
+
+        public MatrixException (string message, Exception innerException)
+            : base (message, innerException)
+        {}    
+    }
     public class Matrix
     {
         /// <summary>
         /// Number of rows.
         /// </summary>
+        private int rows;
         public int Rows
         {
-            get => throw new NotImplementedException();
+            get;
+            
         }
+
+
+
+
 
         /// <summary>
         /// Number of columns.
         /// </summary>
+        private int columns;
         public int Columns
         {
-            get => throw new NotImplementedException();
+            get;
+            
         }
 
         /// <summary>
         /// An array of floating-point values that represents the elements of this Matrix.
         /// </summary>
+        private double[,] array;
         public double[,] Array
         {
-            get => throw new NotImplementedException();
-        }
+            get;
+            
+        } 
         
         /// <summary>
         /// Initializes a new instance of the <see cref="Matrix"/> class.
@@ -38,7 +60,15 @@ namespace Exceptions
         /// <exception cref="ArgumentOutOfRangeException">Thrown when row or column is zero or negative.</exception>
         public Matrix(int rows, int columns)
         {
-            throw new NotImplementedException();
+            if (rows <= 0 || columns <= 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            array = new double[rows,columns];
+            this.rows = rows;
+            this.columns = columns;
+                
+            
         }
 
         /// <summary>
@@ -48,7 +78,14 @@ namespace Exceptions
         /// <exception cref="ArgumentNullException">Thrown when array is null.</exception>
         public Matrix(double[,] array)
         {
-            throw new NotImplementedException();
+            if (array==null)
+            {
+                throw new ArgumentNullException();
+            }
+            
+            this.array = array;
+            
+            
         }
 
         /// <summary>
@@ -59,8 +96,16 @@ namespace Exceptions
         /// <exception cref="ArgumentException">Thrown when index is out of range.</exception>
         public double this[int row, int column]
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get
+            {
+                if (row > Rows|| column>Columns || row<=0||column<=0) throw new ArgumentException();
+                return array[row, column];
+            }
+            set
+            {
+                if(row > Rows|| column>Columns || row<=0||column<=0) throw new ArgumentException();
+                array[row, column] = value;
+            }
         }
 
         /// <summary>
@@ -72,7 +117,24 @@ namespace Exceptions
         /// <returns><see cref="Matrix"/></returns>
         public Matrix Add(Matrix matrix)
         {
-            throw new NotImplementedException();
+            
+            if (matrix == null) throw new ArgumentNullException(); 
+            if(matrix.Columns!=columns|| matrix.Rows!=rows)
+            {
+                throw new MatrixException();
+            }
+            
+            
+                var res = new double[Rows,Columns];
+                for(int x = 0;x<Rows;x++)
+                {
+                    for(int y = 0;y<Columns;y++)
+                    {
+                        res[x,y] = this[x,y]+matrix[x,y];
+                    }
+                }
+            
+            return new Matrix(res);
         }
 
         /// <summary>
@@ -84,7 +146,24 @@ namespace Exceptions
         /// <returns><see cref="Matrix"/></returns>
         public Matrix Subtract(Matrix matrix)
         {
-            throw new NotImplementedException();
+            double[,] result = new double[Rows,Columns];
+            if (matrix == null) throw new ArgumentNullException(); 
+            if(matrix.Columns!=Columns|| matrix.Rows!=Rows)
+            {
+                throw new MatrixException();
+            }
+            
+            
+                
+                for(int x = 0;x<Rows;x++)
+                {
+                    for(int y = 0;y<Columns;y++)
+                    {
+                        result[x,y] = Array[x,y] - matrix.Array[x,y];
+                    }
+                }
+            
+            return new Matrix(result);
         }
 
         /// <summary>
@@ -96,7 +175,21 @@ namespace Exceptions
         /// <returns><see cref="Matrix"/></returns>
         public Matrix Multiply(Matrix matrix)
         {
-            throw new NotImplementedException();
+            
+            if (matrix == null) throw new ArgumentNullException();
+            if(Columns!=matrix.Rows)
+            {
+                throw new MatrixException();
+            }
+            
+            
+                double[,] result = new double[Rows, matrix.Rows];
+                for (int i=0; i<Rows; i++)
+                for (int j=0; j<matrix.Columns; j++)
+                for (int k = 0; k < Columns; k++)
+                    result[i,j] += Array[i,k] * matrix.Array[k,j];
+            
+            return new Matrix(result);
         }
     }
 }
