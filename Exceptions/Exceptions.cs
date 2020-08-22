@@ -2,7 +2,7 @@
 
 namespace Exceptions
 {
-    //TODO: Create custom exception "MatrixException"
+    
     public class MatrixException : Exception
     {
         public MatrixException ()
@@ -45,7 +45,7 @@ namespace Exceptions
         /// <summary>
         /// An array of floating-point values that represents the elements of this Matrix.
         /// </summary>
-        private double[,] array;
+        private readonly double[,] array;
         public double[,] Array
         {
             get;
